@@ -59,6 +59,12 @@ spec:
             - configMapRef:
                 name: {{ include "banking-library-chart.appname" . }}
                 optional: true
+          env:
+            - name: NEW_RELIC_LICENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "banking-library-chart.appname" . }}-common-new-relic
+                  key: licenseKey
           resources:
 {{ toYaml .Values.resources | trim | indent 12 }}
           nodeSelector: { }
