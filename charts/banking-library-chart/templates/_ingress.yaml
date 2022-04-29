@@ -10,7 +10,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
     certmanager.k8s.io/cluster-issuer: letsencrypt-production
     certmanager.k8s.io/acme-challenge-type: dns01
-    {{- if (eq .Values.releaseStage "production") }}
+{{- if (eq .Values.releaseStage "production") }}
     certmanager.k8s.io/acme-dns01-provider: cloudflare
 spec:
   tls:
@@ -19,7 +19,7 @@ spec:
         - "*.moneylion.com"
   rules:
     - host: "{{ include "banking-library-chart.fqappname" . }}.moneylion.com"
-    {{- else }}
+{{- else }}
     certmanager.k8s.io/acme-dns01-provider: route53-dev
 spec:
   tls:
@@ -28,12 +28,12 @@ spec:
         - "*.moneylion.io"
   rules:
     - host: "{{ include "banking-library-chart.fqappname" . }}.moneylion.io"
-      {{- end }}
+{{- end }}
       http:
         paths:
           - path: /
             backend:
               serviceName: {{ include "banking-library-chart.fqappname" . }}-stable
               servicePort: {{ .Values.service.port }}
-  {{- end -}}
-  {{/*  TODO: merge the hosts section by using variables in values files */}}
+{{- end -}}
+{{/*  TODO: merge the hosts section by using variables in values files */}}

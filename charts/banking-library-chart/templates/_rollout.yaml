@@ -17,7 +17,7 @@ spec:
         nginx:
           stableIngress: {{ include "banking-library-chart.fqappname" . }}
       maxUnavailable: 25%
-      {{- if (eq .Values.releaseStage "production") }}
+{{- if (eq .Values.releaseStage "production") }}
       steps:
         - setWeight: 10
         - pause: { }
@@ -27,7 +27,7 @@ spec:
         - pause: { duration: 30s }
         - setWeight: 75
         - pause: { duration: 30s }
-  {{- end }}
+{{- end }}
   revisionHistoryLimit: 2
   selector:
     matchLabels:
@@ -36,12 +36,12 @@ spec:
     metadata:
       labels:
         app: {{ include "banking-library-chart.appname" . }}
-      {{- if .Values.annotations }}
+{{- if .Values.annotations }}
       annotations:
-        {{- if .Values.annotations.assumeRole }}
+{{- if .Values.annotations.assumeRole }}
         iam.amazonaws.com/role: {{ .Values.annotations.assumeRole }}
-    {{- end }}
-    {{- end }}
+{{- end }}
+{{- end }}
     spec:
       containers:
         - name: {{ include "banking-library-chart.appname" . }}
@@ -52,9 +52,9 @@ spec:
               containerPort: {{ .Values.service.targetPort }}
               protocol: TCP
           livenessProbe:
-          {{ toYaml .Values.livenessProbe | trim | indent 12 }}
+{{ toYaml .Values.livenessProbe | trim | indent 12 }}
           readinessProbe:
-          {{ toYaml .Values.readinessProbe | trim | indent 12 }}
+{{ toYaml .Values.readinessProbe | trim | indent 12 }}
           envFrom:
             - configMapRef:
                 name: {{ include "banking-library-chart.appname" . }}
@@ -66,8 +66,8 @@ spec:
                   name: {{ include "banking-library-chart.appname" . }}-common-new-relic
                   key: licenseKey
           resources:
-          {{ toYaml .Values.resources | trim | indent 12 }}
+{{ toYaml .Values.resources | trim | indent 12 }}
           nodeSelector: { }
           affinity: { }
           tolerations: [ ]
-  {{- end -}}
+{{- end -}}

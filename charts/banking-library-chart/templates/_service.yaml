@@ -47,4 +47,4 @@ spec:
     app: {{ include "banking-library-chart.appname" . }}
     # This selector will be updated with the pod-template-hash of the canary ReplicaSet. e.g.:
     # rollouts-pod-template-hash: 7bf84f9696
-  {{- end -}}
+{{- end -}}
