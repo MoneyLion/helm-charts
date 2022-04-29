@@ -3,6 +3,16 @@ entries:
   banking-library-chart:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2022-04-29T19:32:32.702210577Z"
+    description: A Helm chart for Kubernetes
+    digest: 5a1a9ca19ee77332d26dc7666475ca9813a2526f2c11a1b7728db151a466ac6c
+    name: banking-library-chart
+    type: library
+    urls:
+    - https://github.com/MoneyLion/helm-charts/releases/download/banking-library-chart-0.1.2/banking-library-chart-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2022-04-29T19:10:57.608291536Z"
     description: A Helm chart for Kubernetes
     digest: e51b1329b99e39b937d1913de27e9776ca33c118251e0edf012ff8f1c36b67f1
@@ -42,4 +52,4 @@ entries:
     urls:
     - https://github.com/MoneyLion/helm-charts/releases/download/mylibchart-0.1.1/mylibchart-0.1.1.tgz
     version: 0.1.1
-generated: "2022-04-29T19:10:57.608303537Z"
+generated: "2022-04-29T19:32:32.702222377Z"
