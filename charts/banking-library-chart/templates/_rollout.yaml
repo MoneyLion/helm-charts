@@ -1,0 +1,73 @@
+{{- define "banking-library-chart.rollout" -}}
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: {{ include "banking-library-chart.fqappname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "banking-library-chart.appname" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    helm.sh/chart: {{ include "banking-library-chart.appname" . }}-0.0.1
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  strategy:
+    canary:
+      canaryService: {{ include "banking-library-chart.fqappname" . }}-canary
+      stableService: {{ include "banking-library-chart.fqappname" . }}-stable
+      trafficRouting:
+        nginx:
+          stableIngress: {{ include "banking-library-chart.fqappname" . }}
+      maxUnavailable: 25%
+      {{- if (eq .Values.releaseStage "production") }}
+      steps:
+        - setWeight: 10
+        - pause: { }
+        - setWeight: 25
+        - pause: { duration: 30s }
+        - setWeight: 50
+        - pause: { duration: 30s }
+        - setWeight: 75
+        - pause: { duration: 30s }
+  {{- end }}
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: {{ include "banking-library-chart.appname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "banking-library-chart.appname" . }}
+      {{- if .Values.annotations }}
+      annotations:
+        {{- if .Values.annotations.assumeRole }}
+        iam.amazonaws.com/role: {{ .Values.annotations.assumeRole }}
+    {{- end }}
+    {{- end }}
+    spec:
+      containers:
+        - name: {{ include "banking-library-chart.appname" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          livenessProbe:
+          {{ toYaml .Values.livenessProbe | trim | indent 12 }}
+          readinessProbe:
+          {{ toYaml .Values.readinessProbe | trim | indent 12 }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "banking-library-chart.appname" . }}
+                optional: true
+          env:
+            - name: NEW_RELIC_LICENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "banking-library-chart.appname" . }}-common-new-relic
+                  key: licenseKey
+          resources:
+          {{ toYaml .Values.resources | trim | indent 12 }}
+          nodeSelector: { }
+          affinity: { }
+          tolerations: [ ]
+  {{- end -}}
