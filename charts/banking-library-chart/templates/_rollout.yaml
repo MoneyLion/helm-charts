@@ -15,7 +15,7 @@ spec:
       stableService: {{ include "banking-library-chart.fqappname" . }}-stable
       trafficRouting:
         nginx:
-          stableIngress: {{ include "banking-library-chart.fqappname" . }}
+          stableIngress: {{ include "banking-library-chart.fqappname" . }}-stable
       maxUnavailable: 25%
 {{- if (eq .Values.releaseStage "production") }}
       steps:
@@ -59,12 +59,6 @@ spec:
             - configMapRef:
                 name: {{ include "banking-library-chart.appname" . }}
                 optional: true
-          env:
-            - name: NEW_RELIC_LICENSE_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "banking-library-chart.appname" . }}-common-new-relic
-                  key: licenseKey
           resources:
 {{ toYaml .Values.resources | trim | indent 12 }}
           nodeSelector: { }

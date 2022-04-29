@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ include "banking-library-chart.fqappname" . }}
+  name: {{ include "banking-library-chart.fqappname" . }}-stable
   labels:
     app.kubernetes.io/name: {{ include "banking-library-chart.appname" . }}
   annotations:
