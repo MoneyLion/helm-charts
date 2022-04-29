@@ -1,0 +1,10 @@
+{{- define "banking-library-chart.configmap" -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "banking-library-chart.appname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "banking-library-chart.appname" . }}
+data:
+{{ toYaml .Values.env | trim | indent 2 }}
+{{- end -}}

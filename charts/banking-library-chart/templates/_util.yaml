@@ -1,0 +1,37 @@
+{{- /*
+banking-library-chart.util.merge will merge two YAML templates and output the result.
+This takes an array of three values:
+- the top context
+- the template name of the overrides (destination)
+- the template name of the base (source)
+*/}}
+{{- define "banking-library-chart.util.merge" -}}
+{{- $top := first . -}}
+{{- $overrides := fromYaml (include (index . 1) $top) | default (dict ) -}}
+{{- $tpl := fromYaml (include (index . 2) $top) | default (dict ) -}}
+{{- toYaml (merge $overrides $tpl) -}}
+{{- end -}}
+
+{{/*
+Create a frieldly app name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "banking-library-chart.appname" -}}
+{{- if .Values.appName }}
+{{- .Values.appName | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- required "value for .Values.appName is not set" "" }}
+{{- end }}
+{{- end }}
+
+{{/*
+Create a fully qualified app name of form <environment>-<application name>.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "banking-library-chart.fqappname" -}}
+{{- if eq .Values.releaseStage "production" }}
+{{- .Values.appName | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{-  printf "%s-%s" .Values.releaseStage .Values.appName | trunc 63 | trimSuffix "-" }}
+{{- end }}
+  {{- end }}
