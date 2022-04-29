@@ -3,6 +3,16 @@ entries:
   mylibchart:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2022-04-29T09:26:48.507913181Z"
+    description: A Helm chart for Kubernetes
+    digest: a912104ebbb4d5d884438c96051ffcac8f99f9e9f05e2e877e0a5337eab1c05a
+    name: mylibchart
+    type: library
+    urls:
+    - https://github.com/MoneyLion/helm-charts/releases/download/mylibchart-0.1.2/mylibchart-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2022-04-29T06:16:30.687165757Z"
     description: A Helm chart for Kubernetes
     digest: db99fc2380c16b0acb0b1e2652b4d9ae2f9dc60b7390d6d4b5d55bbdcc0ea1ad
@@ -11,4 +21,4 @@ entries:
     urls:
     - https://github.com/MoneyLion/helm-charts/releases/download/mylibchart-0.1.1/mylibchart-0.1.1.tgz
     version: 0.1.1
-generated: "2022-04-29T06:16:30.687171257Z"
+generated: "2022-04-29T09:26:48.507919084Z"
