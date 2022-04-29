@@ -3,6 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Release.Name | printf "%s-%s" .Chart.Name }}
+  test: TEST
 data: {}
 {{- end -}}
 {{- define "mylibchart.configmap" -}}
