@@ -53,14 +53,20 @@ spec:
       containers:
         - name: {{ include "banking-library-chart.appname" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: IfNotPresent
           ports:
             - name: http
-              containerPort: {{ .Values.service.targetPort }}
+              containerPort: 8080
               protocol: TCP
           livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
 {{ toYaml .Values.livenessProbe | trim | indent 12 }}
           readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
 {{ toYaml .Values.readinessProbe | trim | indent 12 }}
           envFrom:
             - configMapRef:

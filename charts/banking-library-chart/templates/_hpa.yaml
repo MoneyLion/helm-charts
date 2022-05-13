@@ -16,17 +16,13 @@ spec:
   metrics:
 {{- end}}
 {{- with .Values.autoscale.targetPercentage }}
-{{- if .memory }}
     - type: Resource
       resource:
         name: memory
         targetAverageUtilization: {{ .memory }}
-{{- end }}
-{{- if .cpu }}
     - type: Resource
       resource:
         name: cpu
         targetAverageUtilization: {{ .cpu }}
-{{- end }}
 {{- end }}
 {{- end }}

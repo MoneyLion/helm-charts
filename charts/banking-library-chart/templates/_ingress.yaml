@@ -34,6 +34,5 @@ spec:
           - path: /
             backend:
               serviceName: {{ include "banking-library-chart.fqappname" . }}{{ if eq .Values.isCanary true }}-stable{{ end }}
-              servicePort: {{ .Values.service.port }}
+              servicePort: 80
 {{- end -}}
-{{/*  TODO: merge the hosts section by using variables in values files */}}
