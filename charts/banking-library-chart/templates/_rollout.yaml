@@ -10,6 +10,7 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   strategy:
+{{- if eq .Values.isCanary true }}
     canary:
       canaryService: {{ include "banking-library-chart.fqappname" . }}-canary
       stableService: {{ include "banking-library-chart.fqappname" . }}-stable
@@ -28,6 +29,12 @@ spec:
         - setWeight: 75
         - pause: { duration: 30s }
 {{- end }}
+{{- else }}
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 0
+{{ end }}
   revisionHistoryLimit: 2
   selector:
     matchLabels:
@@ -70,4 +77,4 @@ spec:
           nodeSelector: { }
           affinity: { }
           tolerations: [ ]
-{{- end -}}
+{{ end }}

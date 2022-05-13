@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ include "banking-library-chart.fqappname" . }}-stable
+  name: {{ include "banking-library-chart.fqappname" . }}{{ if eq .Values.isCanary true }}-stable{{ end }}
   labels:
     app.kubernetes.io/name: {{ include "banking-library-chart.appname" . }}
   annotations:
@@ -33,7 +33,7 @@ spec:
         paths:
           - path: /
             backend:
-              serviceName: {{ include "banking-library-chart.fqappname" . }}-stable
+              serviceName: {{ include "banking-library-chart.fqappname" . }}{{ if eq .Values.isCanary true }}-stable{{ end }}
               servicePort: {{ .Values.service.port }}
 {{- end -}}
 {{/*  TODO: merge the hosts section by using variables in values files */}}
