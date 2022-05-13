@@ -10,8 +10,3 @@
 {{ include "banking-library-chart.generate-service" (merge (dict "Args" $args) . ) }}
 {{ end }}
 {{ end }}
-
-
-{{/*TODO: ok so we've got the service working. need to look at rollout + ingress ect
-    to see if we need to make similar changes for canary releases 
-*/}}
