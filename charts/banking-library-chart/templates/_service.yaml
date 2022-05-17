@@ -1,49 +1,12 @@
-{{- define "banking-library-chart.service" -}}
-  {{/*TODO: rather than just creating both services, allow this to be configurable by the consuming service
-can also use the same template to create all required services
-*/}}
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ include "banking-library-chart.fqappname" . }}-stable
-  labels:
-    app.kubernetes.io/name: {{ include "banking-library-chart.appname" . }}
-    helm.sh/chart: {{ include "banking-library-chart.appname" . }}-0.0.1
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    register-with-spring-boot-admin: "true"
-spec:
-  type: {{ .Values.service.type }}
-  ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
-      protocol: TCP
-      name: http
-  selector:
-    app: {{ include "banking-library-chart.appname" . }}
-    # This selector will be updated with the pod-template-hash of the stable ReplicaSet. e.g.:
-    # rollouts-pod-template-hash: 789746c88d
-
+{{ define "banking-library-chart.service" }}
+{{ if eq .Values.isCanary true }}
+{{$stableArgs := dict "ServiceSuffix" "-stable" }}
+{{ include "banking-library-chart.generate-service" (merge (dict "Args" $stableArgs) . ) }}
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ include "banking-library-chart.fqappname" . }}-canary
-  labels:
-    app.kubernetes.io/name: {{ include "banking-library-chart.appname" . }}
-    helm.sh/chart: {{ include "banking-library-chart.appname" . }}-0.0.1
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    spring-boot: 'true'
-spec:
-  type: {{ .Values.service.type }}
-  ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
-      protocol: TCP
-      name: http
-  selector:
-    app: {{ include "banking-library-chart.appname" . }}
-    # This selector will be updated with the pod-template-hash of the canary ReplicaSet. e.g.:
-    # rollouts-pod-template-hash: 7bf84f9696
-{{- end -}}
+{{$canaryArgs := dict "ServiceSuffix" "-canary" }}
+{{ include "banking-library-chart.generate-service" (merge (dict "Args" $canaryArgs) . ) }}
+{{ else }}
+{{$args := dict "ServiceSuffix" "" }}
+{{ include "banking-library-chart.generate-service" (merge (dict "Args" $args) . ) }}
+{{ end }}
+{{ end }}

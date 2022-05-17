@@ -1,0 +1,13 @@
+{{ define "banking-library-chart.standardapplication" }}
+{{ include "banking-library-chart.service" . }}
+---
+{{ include "banking-library-chart.rollout" . }}
+---
+{{ include "banking-library-chart.ingress" . }}
+---
+{{ include "banking-library-chart.hpa" . }}
+---
+{{ include "banking-library-chart.externalsecrets" . }}
+---
+{{ include "banking-library-chart.configmap" . }}
+{{ end }}

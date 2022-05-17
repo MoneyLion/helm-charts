@@ -1,6 +1,7 @@
-TODO:
-1. ensure parity with existing code
-2. reduce extra config
-3. get banking-dwh to consume this chart
-4. get all canary apps to consume this chart
-5. expose a way for non canary apps to consume the chart
+This Helm library chart exposes methods that an application chart can use to deploy applications with a standard set of k8s manifests using very little configuration in the consuming project's codebase. 
+The main pattern of consumption requires invoking the banking-library-chart.standardapplication method, but more custom k8s manifest setups can be achieved by directly invoking the library's methods named after the type of manifest they create.
+
+Helpful commands:
+1. Retrieve the required dependencies for the banking-datawarehouse chart from within the charts directory: `helm dependency update ./banking-datawarehouse` 
+2. Use the staging-values.yaml file to generate the expected yaml for the banking-datawarehouse chart from the charts directory: `helm template -f ./banking-datawarehouse/staging-values.yaml --name-template banking-datawarehouse banking-datawarehouse`
+3. Show the values expected to be used for a helm chart: `helm show values banking-datawarehouse`

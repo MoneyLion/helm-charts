@@ -1,17 +1,3 @@
-{{- /*
-banking-library-chart.util.merge will merge two YAML templates and output the result.
-This takes an array of three values:
-- the top context
-- the template name of the overrides (destination)
-- the template name of the base (source)
-*/}}
-{{- define "banking-library-chart.util.merge" -}}
-{{- $top := first . -}}
-{{- $overrides := fromYaml (include (index . 1) $top) | default (dict ) -}}
-{{- $tpl := fromYaml (include (index . 2) $top) | default (dict ) -}}
-{{- toYaml (merge $overrides $tpl) -}}
-{{- end -}}
-
 {{/*
 Create a frieldly app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
@@ -34,4 +20,31 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- else }}
 {{-  printf "%s-%s" .Values.releaseStage .Values.appName | trunc 63 | trimSuffix "-" }}
 {{- end }}
-  {{- end }}
+{{- end }}
+
+{{- define "banking-library-chart.generate-service" -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "banking-library-chart.fqappname" . }}{{.Args.ServiceSuffix}}
+  labels:
+    app.kubernetes.io/name: {{ include "banking-library-chart.appname" . }}
+    helm.sh/chart: {{ include "banking-library-chart.appname" . }}-0.0.1
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    register-with-spring-boot-admin: "true"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+{{- if eq .Values.isCanary true }}
+    app: {{ include "banking-library-chart.appname" . }}
+{{- else }}
+    app.kubernetes.io/name: {{ include "banking-library-chart.appname" . }}
+    app.kubernetes.io/instance: {{ include "banking-library-chart.fqappname" . }}
+{{- end }}
+{{- end }}

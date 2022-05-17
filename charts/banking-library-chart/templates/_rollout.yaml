@@ -10,6 +10,7 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   strategy:
+{{- if eq .Values.isCanary true }}
     canary:
       canaryService: {{ include "banking-library-chart.fqappname" . }}-canary
       stableService: {{ include "banking-library-chart.fqappname" . }}-stable
@@ -28,6 +29,12 @@ spec:
         - setWeight: 75
         - pause: { duration: 30s }
 {{- end }}
+{{- else }}
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 0
+{{ end }}
   revisionHistoryLimit: 2
   selector:
     matchLabels:
@@ -46,14 +53,20 @@ spec:
       containers:
         - name: {{ include "banking-library-chart.appname" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: IfNotPresent
           ports:
             - name: http
-              containerPort: {{ .Values.service.targetPort }}
+              containerPort: 8080
               protocol: TCP
           livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
 {{ toYaml .Values.livenessProbe | trim | indent 12 }}
           readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
 {{ toYaml .Values.readinessProbe | trim | indent 12 }}
           envFrom:
             - configMapRef:
@@ -70,4 +83,4 @@ spec:
           nodeSelector: { }
           affinity: { }
           tolerations: [ ]
-{{- end -}}
+{{ end }}
